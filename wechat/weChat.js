@@ -25,15 +25,15 @@ function weChat(opts){
             try{
                 data = JSON.parse(data);
             }catch(e){
-                //遇到问题更新下AccessToken
+                //閬囧埌闂鏇存柊涓婣ccessToken
                 return that.updateAccessToken(data);
             }
 
-            //判断是否是有效的票据信息
+            //鍒ゆ柇鏄惁鏄湁鏁堢殑绁ㄦ嵁淇℃伅
             if(that.isValidAccessToken(data)){
                 return Promise.resolve(data);
             }else{
-                //更新AccessToken
+                //鏇存柊AccessToken
                 return that.updateAccessToken(data);
             }
         })

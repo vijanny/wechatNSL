@@ -62,6 +62,22 @@ module.exports = function (opts) {
                 console.log(reply);
                 that.body = reply;
                 return ;
+            }else if(message.MsgType === 'voice' ){
+                console.log('MsgType = voice');
+                var now = new Date().getTime();
+                that.status = 200;
+                that.type = 'application/xml';
+                var reply = '<xml>'+
+                    '<ToUserName><![CDATA['+message.FromUserName+']]></ToUserName>'+
+                    '<FromUserName><![CDATA['+message.ToUserName+']]></FromUserName>'+
+                    '<CreateTime>'+now+'</CreateTime>'+
+                    '<MsgType><![CDATA[text]]></MsgType>'+
+                    '<Content><![CDATA[你发送了: '+message.Recognition+']]></Content>'+
+                    '</xml>';
+
+                console.log(reply);
+                that.body = reply;
+                return ;
             }
         }
 
