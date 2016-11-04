@@ -4,7 +4,7 @@
 
 var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
-
+var util = require('./util');
 
 var prefix ='https://api.weixin.qq.com/cgi-bin/';
 
@@ -74,6 +74,19 @@ weChat.prototype.updateAccessToken = function(){
             resolve (data) ;
         });
     });
+};
+
+weChat.prototype.reply = function(){
+    var content = this.body;
+    var message = this.weixin;
+    var xml = util.tpl(content,message);
+
+
+    console.log('xml:'+xml);
+
+    this.status = 200 ;
+    this.type = 'application/xml';
+    this.body = xml ;
 };
 
 module.exports = weChat;

@@ -8,8 +8,9 @@
 var sha1 = require('sha1');
 var WeChat = require('./weChat');
 var getRawBody = require('raw-body');
-var util =  require('../lib/util');
-module.exports = function (opts) {
+var util =  require('./util');
+var LibUtil = require('../lib/util');
+module.exports = function (opts,handler) {
 
 
 
@@ -42,43 +43,16 @@ module.exports = function (opts) {
                 encoding: this.charset
             });
             console.log(data.toString());
-            var content =  yield util.parseXMLAsync(data);
+            var content =  yield LibUtil.parseXMLAsync(data);
             console.log(content);
             var message = util.formatMessage(content.xml);
             console.log(message);
-            if(message.MsgType === 'text' ){
-                console.log('MsgType = text');
-                var now = new Date().getTime();
-                that.status = 200;
-                that.type = 'application/xml';
-                var reply = '<xml>'+
-                    '<ToUserName><![CDATA['+message.FromUserName+']]></ToUserName>'+
-                '<FromUserName><![CDATA['+message.ToUserName+']]></FromUserName>'+
-                '<CreateTime>'+now+'</CreateTime>'+
-                '<MsgType><![CDATA[text]]></MsgType>'+
-                '<Content><![CDATA[你发送了: '+message.Content+']]></Content>'+
-                '</xml>';
 
-                console.log(reply);
-                that.body = reply;
-                return ;
-            }else if(message.MsgType === 'voice' ){
-                console.log('MsgType = voice');
-                var now = new Date().getTime();
-                that.status = 200;
-                that.type = 'application/xml';
-                var reply = '<xml>'+
-                    '<ToUserName><![CDATA['+message.FromUserName+']]></ToUserName>'+
-                    '<FromUserName><![CDATA['+message.ToUserName+']]></FromUserName>'+
-                    '<CreateTime>'+now+'</CreateTime>'+
-                    '<MsgType><![CDATA[text]]></MsgType>'+
-                    '<Content><![CDATA[你发送了: '+message.Recognition+']]></Content>'+
-                    '</xml>';
+            this.weixin = message;
 
-                console.log(reply);
-                that.body = reply;
-                return ;
-            }
+            yield handler.call(this,next);
+
+            wechat.reply.call(this);
         }
 
     }
